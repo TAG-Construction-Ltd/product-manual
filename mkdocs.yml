@@ -51,7 +51,11 @@ markdown_extensions:
   - attr_list
   - md_in_html
   - pymdownx.details
-  - pymdownx.superfences
+  - pymdownx.superfences:
+      custom_fences:
+        - name: mermaid
+          class: mermaid
+          format: !!python/name:pymdownx.superfences.fence_code_format
   - pymdownx.keys
   - pymdownx.tasklist:
       custom_checkbox: true
@@ -78,6 +82,7 @@ nav:
       - "13. Troubleshooting & FAQ": recruiter/13-troubleshooting.md
       - "14. Glossary": recruiter/14-glossary.md
       - "Appendices": recruiter/15-appendices.md
+      - "Product flow maps": recruiter/16-flow-maps.md
   - TAG Connect Worker's Guide:
       - "Start here": worker-guide/index.md
       - "Getting started": worker-guide/getting-started.md
