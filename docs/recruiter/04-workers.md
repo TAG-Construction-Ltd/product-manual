@@ -56,6 +56,44 @@ Any combination of filters + sort + view can be **pinned**: set the table how yo
 
 **Export** produces a spreadsheet of the table *as currently filtered* — what you see is what exports. Choose CSV or Excel. Use it for client submissions and offline lists — and remember export files leave the platform's protection: they contain personal data, so share them only where a spreadsheet of worker details belongs, and delete stale copies.
 
+
+## The whole chapter as one flow
+
+The daily table routine drawn end to end — colour triage, fixing red, shortlisting, and the export gate:
+
+```mermaid
+flowchart TD
+  A(["Open Workers"]) --> B{"Tinted rows at the top?"}
+  B -- "Red rows" --> C["Open the worker"]
+  C --> D["Compliance summary names the failing requirement"]
+  D --> E{"Renewal already uploaded?"}
+  E -- "Yes, sitting in queue" --> F[/"Verify it now — Flow 3"/]
+  E -- "Yes, but rejected" --> G["Re-request with the reason — Flow 5 action card"]
+  E -- "No" --> H["Request re-upload / chase renewal"]
+  F --> I{"Verified and in date?"}
+  I -- "Yes" --> J["Row returns to normal"]
+  I -- "No" --> H
+  B -- "Amber rows" --> K["Expiry within ~30 days"]
+  K --> L["Chase the renewal NOW — calm at day -25 beats crisis at day +1"]
+  B -- "Clean" --> M{"Today's task?"}
+  M -- "Shortlist for a project" --> N["Filter: trade + tier Site Ready or above + compliant + unassigned"]
+  N --> O{"Candidates found?"}
+  O -- "Yes" --> P["Switch to Rich view — compare cards, sectors, tenure"]
+  P --> Q["Assign to project"]
+  Q --> R["Placement recorded with dates — becomes their real site history"]
+  O -- "No" --> S{"Why empty?"}
+  S -- "Tier too strict" --> T["Relax to Site Starter + check what each is missing (breakdown drawer)"]
+  T --> U["Tell the near-misses their one missing step"]
+  S -- "All assigned" --> V["Check placements ending soon"]
+  M -- "Routine sweep" --> W["Sort by last seen — nudge good profiles gone quiet"]
+  M -- "Client needs an export" --> X["Filter first, then Export — the file mirrors the filter"]
+  X --> Y{"Recipient entitled to this data?"}
+  Y -- "Yes" --> Z["Send via agreed channel; delete stale copies"]
+  Y -- "No" --> ZZ["Narrow the filter or decline — exports leave the platform's protection"]
+```
+
+*This diagram also lives in the [product flow maps](16-flow-maps.md) with its six siblings.*
+
 ## Troubleshooting this chapter
 
 | You see | It means | Do this |

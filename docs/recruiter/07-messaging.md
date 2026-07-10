@@ -43,6 +43,39 @@ On your side, action threads show a **context strip** at the top — "About: CPC
 
 While a colleague is actively working a thread, it's marked as theirs — you can read it but not talk over them. If they're away and something's urgent, **takeover** (admins, or per your team's setup) reassigns it to you — and yes, the takeover itself is logged.
 
+
+## The thread lifecycle — one map
+
+Whose move is it, at every point in a thread's life:
+
+```mermaid
+flowchart TD
+  A(["Thread enters: Needs you"]) --> B{"What arrived?"}
+  B -- "Worker completed a requested action" --> C["Review the completion (e.g. re-upload landed in queue)"]
+  C --> D{"Fully done?"}
+  D -- "Yes" --> E["Mark RESOLVED — always your explicit click"]
+  D -- "No" --> F{"Does a template fit the follow-up?"}
+  B -- "Worker replied with a question" --> F
+  F -- "Yes" --> G["Send ACTION CARD — one-tap deep link on their phone"]
+  F -- "No" --> H["Free-text reply, plain words"]
+  G --> I["Status: Awaiting reply"]
+  H --> I
+  I --> J{"Worker acts / replies?"}
+  J -- "Yes" --> K["Auto-flips back to Needs you"] --> B
+  J -- "Ages without answer" --> L{"Urgent?"}
+  L -- "Yes" --> M["Chase — or call; note the call in the thread"]
+  L -- "No" --> N["Leave — it's on their side"]
+  M --> I
+  E --> O{"New topic comes up later?"}
+  O -- "Yes" --> P["NEW thread, right category — never reopen mixed history"]
+  subgraph TAKE ["Colleague's thread"]
+    Q{"Colleague active on it?"} -- "Yes" --> R["Read-only for you"]
+    Q -- "Away + urgent" --> S["Takeover (admin / per team setup) — the takeover is logged"]
+  end
+```
+
+*This diagram also lives in the [product flow maps](16-flow-maps.md) with its six siblings.*
+
 ## Troubleshooting this chapter
 
 | You see | It means | Do this |

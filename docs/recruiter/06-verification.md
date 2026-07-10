@@ -200,6 +200,102 @@ Rejection cascades too: the worker gets the plain-words reason as an action card
 
 ---
 
+
+## The whole chapter as one flow
+
+Everything above, drawn as a single decision map — queue mechanics, all four red-flag trees, the three-way decision, and the approval cascade. When in doubt mid-review, find your position on this map:
+
+```mermaid
+flowchart TD
+  A(["Open Verify"]) --> B{"Queue empty?"}
+  B -- "Yes" --> B1(["Inbox zero — done"])
+  B -- "No" --> C{"Work in bulk or one by one?"}
+  C -- "Bulk (G)" --> QA["Quick Approve grid"]
+  QA --> QA1{"Card pre-selected (clean, high confidence)?"}
+  QA1 -- "Yes" --> QA2["Glance check the card"]
+  QA2 --> QA3{"Still comfortable?"}
+  QA3 -- "Yes" --> QA4["Leave ticked"]
+  QA3 -- "No" --> QA5["Untick — open individually"]
+  QA1 -- "No (Inspect chip)" --> QA5
+  QA4 --> QA6["Approve selected (N)"] --> CASC
+  QA5 --> D
+  C -- "One by one" --> D["Open next card"]
+  D --> E{"Locked by a colleague?"}
+  E -- "Yes" --> E1["Skip with J"] --> D
+  E -- "No" --> F["Card locks to me"]
+  F --> G["Read worker context bar"]
+  G --> H{"Upload plausible for this worker?"}
+  H -- "Odd (first upload, wrong trade)" --> H1["Raise scrutiny — continue carefully"]
+  H -- "Yes" --> I
+  H1 --> I{"Red-flag chips present?"}
+  I -- "No flags" --> J{"Any low-confidence (enlarged) fields?"}
+  J -- "No" --> K["Fast pass: image vs fields"]
+  J -- "Yes" --> J1["Compare highlighted card region to the field"]
+  J1 --> J2{"Extraction correct?"}
+  J2 -- "Yes" --> K
+  J2 -- "No" --> J3["Pencil-edit the field — type EXACTLY as printed, never reformat"]
+  J3 --> K
+  K --> DEC
+  I -- "Flags" --> FL{"Which flag?"}
+
+  FL -- "DOB mismatch" --> M1["Open profile from context bar"]
+  M1 --> M2{"Where is the error?"}
+  M2 -- "Profile typo" --> M3["Fix profile (change is logged)"] --> DEC
+  M2 -- "Card misread" --> M4["Edit the field"] --> DEC
+  M2 -- "Genuinely different person" --> RJ
+
+  FL -- "Expired" --> N1{"Uploaded as current competence?"}
+  N1 -- "Yes" --> RJ
+  N1 -- "Historical evidence" --> N2{"Does it serve the purpose it was requested for?"}
+  N2 -- "Yes" --> DEC
+  N2 -- "Unsure" --> HOLD
+
+  FL -- "Possible duplicate" --> O1["Compare with the existing card"]
+  O1 --> O2{"Same registration no, newer dates?"}
+  O2 -- "Yes — it's a renewal" --> O3["Approve the new; old card stays (history intact)"] --> DEC
+  O2 -- "No — true duplicate" --> RJ
+
+  FL -- "Photo mismatch" --> P1["Zoom-compare cardholder vs profile photo"]
+  P1 --> P2{"Doubt resolved?"}
+  P2 -- "Yes" --> DEC
+  P2 -- "No — never approve on hope" --> HOLD
+
+  DEC{"Decision"} -- "A" --> APP["APPROVE"]
+  DEC -- "R" --> RJ["REJECT"]
+  DEC -- "H" --> HOLD["HOLD"]
+
+  HOLD --> HO1["Check with colleague / scheme register"]
+  HO1 --> HO2{"Resolved?"}
+  HO2 -- "Genuine" --> APP
+  HO2 -- "Not genuine" --> RJ
+  HO2 -- "Still unsure" --> HO3["Stays held in queue"] --> D
+
+  RJ --> R1{"Pick the reason (tells the worker what to DO)"}
+  R1 --> R2["Photo unclear / Wrong document / Expired / Details mismatch / Back side needed"]
+  R2 --> R3["Worker receives action card with one-tap fix"]
+  R3 --> R4{"Worker re-uploads?"}
+  R4 -- "Yes" --> R5["New submission re-enters the queue"] --> D
+  R4 -- "No" --> R6["Worker stays incomplete — nudge via Flow 5"]
+
+  APP --> CASC["THE CASCADE"]
+  CASC --> S1["Permanent audit entry: who, when, confirmed values"]
+  CASC --> S2{"Satisfies a compliance requirement?"}
+  S2 -- "Yes" --> S3["Worker's compliance can flip green"]
+  CASC --> S4["Completeness score recalculates"]
+  S4 --> S5{"Tier threshold crossed? (20 / 35 / 70)"}
+  S5 -- "Yes" --> S6["Tier changes — worker's phone shows it in moments"]
+  S6 --> S7{"First time reaching Site Strong?"}
+  S7 -- "Yes" --> S8["Recognition moment fires (once ever)"]
+  S5 -- "No" --> S9["Silent progress inside the band"]
+  S3 --> T
+  S8 --> T
+  S9 --> T{"More cards in queue?"}
+  T -- "Yes (J)" --> D
+  T -- "No" --> B1
+```
+
+*This diagram also lives in the [product flow maps](16-flow-maps.md) with its six siblings.*
+
 ## Troubleshooting this chapter
 
 | You see | It means | Do this |

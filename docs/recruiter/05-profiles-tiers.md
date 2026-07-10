@@ -79,6 +79,47 @@ Tiers move automatically, both directions. The usual causes:
 
 Every tier change writes an audit entry with its cause — when a worker asks "why did I drop?", the profile's audit section answers precisely, in seconds.
 
+
+## What the system does on its own — the tier engine, drawn
+
+The automatic flows behind every tier change: the nightly expiry sweep and the event-driven recalculation, converging on the same arithmetic — including why no valid CSCS caps a worker below Site Strong with no rule involved:
+
+```mermaid
+flowchart TD
+  subgraph NIGHT ["Every night"]
+    A(["Nightly sweep"]) --> B{"Any card's expiry date crossed?"}
+    B -- "No" --> B1(["Nothing to do"])
+    B -- "Yes" --> C["Recalculate that worker"]
+  end
+  subgraph EVENT ["On every profile event"]
+    D(["Verification / edit / deletion / experience added"]) --> C
+  end
+  C --> E["Re-evaluate all components (all-or-nothing each)"]
+  E --> F{"ANY valid, in-date, verified CSCS exists?"}
+  F -- "No" --> G["CSCS component = 0 — maximum possible score 65"]
+  G --> H["Site Strong (70+) mathematically unreachable — no rule needed"]
+  F -- "Yes" --> I["CSCS component earned"]
+  H --> J["New score"]
+  I --> J
+  J --> K{"Crossed a band boundary? (20 / 35 / 70)"}
+  K -- "Up" --> L["Promotion — tier badge climbs"]
+  L --> L1{"First ever time at 70+?"}
+  L1 -- "Yes" --> L2["Recognition fires (once, ever)"]
+  K -- "Down" --> M["Demotion — audit records the CAUSE"]
+  M --> N{"Cause?"}
+  N -- "Card expired" --> N1["Worker sees: renew it and climb straight back + amber expiry alert"]
+  N -- "Document deleted" --> N2["Worker sees: re-add a verified card"]
+  N -- "90-day inactivity (-5)" --> N3["Only boundary-sitters drop — full profiles shrug it off"]
+  K -- "No" --> O["Silent movement inside the band"]
+  N1 --> P{"Worker fixes it?"}
+  N2 --> P
+  N3 --> P
+  P -- "Yes: renewal verified / activity resumes" --> D
+  P -- "No" --> Q["Stays down — appears in red/amber triage, Flow 4"]
+```
+
+*This diagram also lives in the [product flow maps](16-flow-maps.md) with its six siblings.*
+
 ## 5.5 The breakdown drawer
 
 Click the tier badge or completeness gauge to open the **breakdown drawer**: the score, each component earned/unearned with what's missing in plain words ("2 more verified cards needed"), the points to the next tier, and the worker's tier journey over time (skipped tiers show as "passed"). Use it before calling a worker — "you're one verified card from Site Strong" is a better conversation than "add more stuff."

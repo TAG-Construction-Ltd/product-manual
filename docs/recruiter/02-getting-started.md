@@ -19,6 +19,38 @@ Sign in at your dashboard URL with your email and password.
 | "Account locked" or repeated failures | Wait a few minutes and retry with a reset password. Still stuck → your admin, then support. |
 | Signed out unexpectedly mid-session | Sessions expire for security; sign back in. If it happens constantly, note what page it happens on and tell support — that detail matters. |
 
+
+## Every path into the dashboard — one map
+
+The full login-and-recovery logic, including every dead end and its way out:
+
+```mermaid
+flowchart TD
+  A(["Admin sends invitation"]) --> B["Recruiter opens email link"]
+  B --> C["Set password (first time)"]
+  C --> D["Sign-in screen"]
+  D --> E{"Credentials correct?"}
+  E -- "Yes" --> Z(["Dashboard Home"])
+  E -- "No" --> F{"Forgotten password?"}
+  F -- "Yes" --> G["Request reset link"]
+  G --> H{"Email arrives?"}
+  H -- "No" --> H1{"In spam? Right address?"}
+  H1 -- "Fixed" --> G
+  H1 -- "Still nothing" --> H2["Ask admin to re-send / verify invited address"]
+  H2 --> G
+  H -- "Yes" --> I{"Link still valid?"}
+  I -- "Expired" --> G
+  I -- "Valid" --> J["Set new password"] --> D
+  F -- "No, just mistyped" --> K{"Repeated failures / locked?"}
+  K -- "Locked" --> L["Wait a few minutes"] --> D
+  K -- "No" --> D
+  Z --> M{"Session expires mid-work?"}
+  M -- "Yes" --> D
+  M -- "Happens constantly" --> N["Note the page it happens on and report to support"]
+```
+
+*This diagram also lives in the [product flow maps](16-flow-maps.md) with its six siblings.*
+
 ## 2.3 The lie of the land
 
 The **left sidebar** is home base, always visible:
@@ -34,6 +66,39 @@ The **left sidebar** is home base, always visible:
 Top right: search, notifications bell ([Chapter 11](11-notifications.md)), and your account menu ([Chapter 12](12-account-admin.md)). The chat dock sits in the bottom corner of every page.
 
 <div class="screenshot-placeholder">SCREENSHOT ch02-nav-tour.png — full dashboard with callouts: ① sidebar ② Verify badge ③ bell & account ④ chat dock</div>
+
+
+## How the whole dashboard hangs together
+
+The master map: from sign-in to the five working areas. Each grey subflow node has its own detailed diagram in its chapter.
+
+```mermaid
+flowchart TD
+  A(["Recruiter signs in"]) --> B{"Credentials OK?"}
+  B -- "No" --> B1[/"Login &amp; recovery — Flow 2"/]
+  B1 --> B
+  B -- "Yes" --> C["Dashboard Home"]
+  C --> C1["Read KPI tiles"]
+  C --> C2["Clear the attention block"]
+  C --> C3["Glance at activity feed"]
+  C1 --> D{"Anything surprising?"}
+  D -- "Yes" --> D1["Click the tile — opens Workers pre-filtered to that number"]
+  D -- "No" --> E{"Where is today's work?"}
+  C2 --> E
+  D1 --> E
+  E -- "Queue badge > 0" --> F[/"VERIFY — Flow 3"/]
+  E -- "Red or amber rows" --> G[/"WORKERS — Flow 4"/]
+  E -- "Threads: Needs you" --> H[/"MESSAGES — Flow 5"/]
+  E -- "Client or crew work" --> I["PROJECTS: client to project to placement"]
+  E -- "Evidence or history needed" --> J[/"AUDIT and REPORTS — Flow 7"/]
+  F --> K(["Loop back to Home"])
+  G --> K
+  H --> K
+  I --> K
+  J --> K
+```
+
+*This diagram also lives in the [product flow maps](16-flow-maps.md) with its six siblings.*
 
 ## 2.4 Your first thirty minutes — a suggested path
 

@@ -1,6 +1,6 @@
 # Product flow maps
 
-The complete decision logic of the recruiter dashboard, drawn: one master map plus six detailed flows, nested down to individual judgment calls. Rectangles are actions, diamonds are decisions, edge labels are the answers. Each flow summarises a chapter of this manual — use these as the visual index, and the chapters for the words.
+The complete decision logic of the recruiter dashboard, drawn: one master map plus six detailed flows, nested down to individual judgment calls. Rectangles are actions, diamonds are decisions, edge labels are the answers. Each flow summarises a chapter of this manual — use these as the visual index, and the chapters for the words. Each flow is also embedded in its home chapter, right where you need it.
 
 !!! note "One global rule, drawn nowhere"
     Every human action in these flows writes a permanent audit entry — who, when, what. Repeating that on every node would double the diagrams, so it's stated once here and holds everywhere.

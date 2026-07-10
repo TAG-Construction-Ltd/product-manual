@@ -48,4 +48,43 @@ Chat message contents (conversations live in Messages — the trail records acti
 
 Kasia Nowak disputes that her CPCS card was unfairly rejected in June. Open **Investigate → Card**, select the CPCS card, range: all time. You read, in order: uploaded 3 June (actor: worker) → reviewed 4 June (actor: Marcus Hale) → **rejected, reason: photo unclear** → re-uploaded 6 June → verified 6 June (actor: Priya Shah). Total time to a complete, timestamped, named answer: under a minute. That's the page's whole value, compressed.
 
+
+## Investigation to evidence — one map
+
+From "a question about the past" to a report in someone's hands, including the admin gate and the external-sharing check:
+
+```mermaid
+flowchart TD
+  A(["A question about the past"]) --> B{"What kind?"}
+  B -- "About one worker" --> C["Investigate: Worker scope"]
+  B -- "About one document" --> D["Investigate: Card scope — its whole life, upload to expiry"]
+  B -- "About a team member's actions" --> E{"Am I an admin?"}
+  E -- "Yes" --> F["Investigate: Recruiter scope (ADMIN)"]
+  E -- "No" --> G["Ask an admin — scope is role-gated"]
+  C --> H["Narrow: time range + category"]
+  D --> H
+  F --> H
+  H --> I["Read entries: timestamp, actor (person or SYSTEM), action, before-to-after diff, reason"]
+  I --> J{"Need the underlying record?"}
+  J -- "Yes" --> K["Deep-link — the trail is the index, not the destination"]
+  J -- "Entry looks wrong" --> L["It can't be edited — corrections become NEW entries; the original stands"]
+  I --> M{"Need formal proof for someone?"}
+  M -- "Yes" --> N{"Scope?"}
+  N -- "One person" --> O["Worker report"]
+  N -- "One site" --> P["Project report"]
+  N -- "One account" --> Q["Client report"]
+  N -- "Everything" --> R["Whole-workforce report"]
+  O --> S["Check the date range MATCHES the intent"]
+  P --> S
+  Q --> S
+  R --> S
+  S --> T["Generate, review on screen"]
+  T --> U{"Sending externally?"}
+  U -- "Yes" --> V["Only what the recipient is entitled to — a client gets their project, not the estate"]
+  U -- "No" --> W(["Done — regenerate fresh next time, never reuse last month's file"])
+  V --> W
+```
+
+*This diagram also lives in the [product flow maps](16-flow-maps.md) with its six siblings.*
+
 <div class="page-feedback" markdown>Was this page helpful? [Tell us what was missing](mailto:support@tagconstructionltd.co.uk?subject=Help%20centre%20feedback%3A%20Audit%20trail).</div>
