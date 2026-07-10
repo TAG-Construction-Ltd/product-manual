@@ -1,0 +1,2 @@
+mkdocs-material>=9.5
+mkdocs-print-site-plugin>=2.3

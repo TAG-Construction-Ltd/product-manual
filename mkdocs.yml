@@ -1,0 +1,77 @@
+site_name: TAG Help Centre
+site_description: User guides for the TAG Recruiter Dashboard and TAG Connect worker app
+site_url: https://tag-construction-ltd.github.io/tag-help/
+repo_url: https://github.com/TAG-Construction-Ltd/tag-help
+
+theme:
+  name: material
+  palette:
+    - scheme: default
+      primary: custom
+      toggle: { icon: material/brightness-7, name: Switch to dark mode }
+    - scheme: slate
+      primary: custom
+      toggle: { icon: material/brightness-4, name: Switch to light mode }
+  features:
+    - navigation.instant
+    - navigation.instant.progress
+    - navigation.tabs
+    - navigation.sections
+    - navigation.top
+    - navigation.tracking
+    - navigation.footer
+    - toc.follow
+    - search.suggest
+    - search.highlight
+    - search.share
+    - content.code.copy
+    - content.tabs.link
+
+extra_css:
+  - assets/tag-theme.css
+extra_javascript:
+  - assets/tag-interactive.js
+
+plugins:
+  - search
+  - print-site:
+      add_to_navigation: true
+      print_page_title: "TAG Help Centre — full manual (PDF)"
+      include_css: true
+
+markdown_extensions:
+  - admonition
+  - tables
+  - attr_list
+  - md_in_html
+  - pymdownx.details
+  - pymdownx.superfences
+  - pymdownx.keys
+  - pymdownx.tasklist:
+      custom_checkbox: true
+  - pymdownx.tabbed:
+      alternate_style: true
+  - toc:
+      permalink: true
+
+nav:
+  - Home: index.md
+  - Recruiter Dashboard Manual:
+      - "1. Welcome & key concepts": recruiter/01-concepts.md
+      - "2. Getting started": recruiter/02-getting-started.md
+      - "3. Your dashboard home": recruiter/03-dashboard-home.md
+      - "4. Managing workers": recruiter/04-workers.md
+      - "5. Worker profiles & tiers": recruiter/05-profiles-tiers.md
+      - "6. Verifying documents": recruiter/06-verification.md
+      - "7. Messaging workers": recruiter/07-messaging.md
+      - "8. Clients, projects & sites": recruiter/08-clients-projects.md
+      - "9. Compliance & reporting": recruiter/09-compliance-reporting.md
+      - "10. The audit trail": recruiter/10-audit-trail.md
+      - "11. Notifications": recruiter/11-notifications.md
+      - "12. Your account & administration": recruiter/12-account-admin.md
+      - "13. Troubleshooting & FAQ": recruiter/13-troubleshooting.md
+      - "14. Glossary": recruiter/14-glossary.md
+      - "Appendices": recruiter/15-appendices.md
+  - TAG Connect Worker's Guide:
+      - "Worker's guide (all pages)": worker-guide/index.md
+  - Change log: changelog.md
