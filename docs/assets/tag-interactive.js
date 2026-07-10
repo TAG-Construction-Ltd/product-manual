@@ -1,4 +1,20 @@
-/* TAG Help Centre interactivity - re-binds on every instant-navigation page change */
+/* TAG Help Centre interactivity — re-binds on every instant-navigation page change */
+
+/* ---- Command-palette: Cmd/Ctrl+K opens Material search (bound once) ---- */
+window.addEventListener("keydown", function (e) {
+  var k = (e.key || "").toLowerCase();
+  if ((e.metaKey || e.ctrlKey) && k === "k") {
+    var toggle = document.querySelector('[data-md-toggle="search"]');
+    var input = document.querySelector(".md-search__input");
+    if (toggle && input) {
+      e.preventDefault();
+      toggle.checked = true;
+      setTimeout(function () { input.focus(); input.select(); }, 60);
+    }
+  }
+});
+
+/* ---- Hotspots (image annotations) ---- */
 document$.subscribe(function () {
   document.querySelectorAll(".shot").forEach(function (shot) {
     var note = shot.querySelector(".hs-note");
@@ -16,7 +32,23 @@ document$.subscribe(function () {
   });
 });
 
-/* Tier explorer (Chapter 5) */
+/* ---- Hero subtitle: typing reveal on first load (motion-safe) ---- */
+document$.subscribe(function () {
+  var sub = document.querySelector(".tag-hero-sub");
+  if (!sub || sub.dataset.done === "1") return;
+  var full = (sub.getAttribute("data-typed") || sub.textContent || "").trim();
+  var reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  if (reduce || !full) { sub.textContent = full; sub.dataset.done = "1"; return; }
+  sub.innerHTML = '<span class="typed"></span><span class="cursor">▋</span>';
+  var typed = sub.querySelector(".typed");
+  var i = 0;
+  (function tick() {
+    if (i <= full.length) { typed.textContent = full.slice(0, i); i++; setTimeout(tick, 16); }
+    else { sub.dataset.done = "1"; var c = sub.querySelector(".cursor"); if (c) { setTimeout(function () { c.remove(); }, 1200); } }
+  })();
+});
+
+/* ---- Tier explorer (Chapter 5) ---- */
 document$.subscribe(function () {
   var ex = document.querySelector(".tier-explorer");
   if (!ex) return;
