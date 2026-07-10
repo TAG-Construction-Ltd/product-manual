@@ -153,7 +153,7 @@ When a worker hands you a physical card or emails a photo, you can upload it for
 
 ---
 
-## 6.7 Keyboard shortcuts
+## 6.10 Keyboard shortcuts
 
 | Key | Action |
 |---|---|
@@ -162,6 +162,41 @@ When a worker hands you a physical card or emails a photo, you can upload it for
 | ++r++ | Reject (opens reason picker) |
 | ++j++ / ++k++ | Next / previous card |
 | ++g++ | Grid (Quick Approve) view |
+
+---
+
+## 6.7 What approving actually triggers
+
+An approval is never just a green tick — it cascades:
+
+1. The card becomes the worker's **verified evidence** for any requirement it satisfies — their compliance status can flip green off the back of it.
+2. Their **completeness score recalculates**, and if a threshold is crossed, their **tier changes** — the worker's phone shows the promotion moments later. For a new worker, your first approval is literally the event that lifts them out of New Hand.
+3. A permanent **audit entry** records you, the timestamp, and the confirmed field values.
+
+Rejection cascades too: the worker gets the plain-words reason as an action card, the document counts for nothing, and the same permanent record is written. Understanding the cascade is why queue speed matters — every card sitting unreviewed is a worker whose tier, compliance, and deployability are frozen.
+
+## 6.8 The red-flag glossary
+
+| Chip | What triggered it | How to judge it |
+|---|---|---|
+| **DOB mismatch** | Date of birth read from the card differs from the worker's profile | Open the profile from the context bar. Typo on one side → correct it (the fix is logged); genuinely different person's card → reject: *details don't match* |
+| **Expired** | The card's expiry date has passed | Usually reject: *card expired*. Exception — a card uploaded as historical evidence rather than current competence: judge against why it was requested |
+| **Possible duplicate** | A very similar card already exists for this worker | Compare the two: a renewal (newer dates, same registration number) is legitimate — approve the new; a genuine double-submission → reject the duplicate |
+| **Photo mismatch** | The cardholder photo doesn't resemble the profile photo | The serious one. Compare carefully at zoom; unresolved doubt → **Hold** and raise it, don't approve on hope |
+
+## 6.9 Edge cases & judgment calls
+
+**Two cards of the same type.** Normal and fine — a worker with an expired CSCS *and* its valid renewal is exactly what renewal looks like. The platform judges by the **valid** one; you don't need to delete the old card, and its history stays in the trail.
+
+**The card is genuine but the details are stale** (old address, name changed since marriage). Verify what the card attests — its qualification and validity. Profile details are corrected on the profile, not by rejecting a real card.
+
+**You can read the card but the system barely could** (worn card, odd variant). Correct every field yourself against the image and approve — your eyes outrank the extraction, and your corrections teach it.
+
+**You're not sure the card type is what it claims.** Unfamiliar scheme, odd layout — **Hold** and check with a colleague or the scheme's own register. An approval you couldn't defend later is worse than a day's delay.
+
+**The worker is standing next to you asking you to hurry.** The queue doesn't know about social pressure, and neither should your judgment. The standard is the same whether the worker is watching or not — that consistency *is* what your approvals are worth.
+
+**You realise a past approval was wrong.** It can't be unhappened — the trail is honest — but it can be corrected: request a re-review/re-upload, reject properly this time, and the record shows both the error and the fix. A visible correction is a *good* audit story; a quiet one isn't possible, by design.
 
 ---
 
