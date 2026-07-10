@@ -79,5 +79,12 @@ nav:
       - "14. Glossary": recruiter/14-glossary.md
       - "Appendices": recruiter/15-appendices.md
   - TAG Connect Worker's Guide:
-      - "Worker's guide (all pages)": worker-guide/index.md
+      - "Start here": worker-guide/index.md
+      - "Getting started": worker-guide/getting-started.md
+      - "Your setup checklist": worker-guide/setup-checklist.md
+      - "Your cards": worker-guide/cards.md
+      - "Your profile tier": worker-guide/tier.md
+      - "Your profile": worker-guide/profile.md
+      - "Messages": worker-guide/messages.md
+      - "Help & your account": worker-guide/help-account.md
   - Change log: changelog.md
