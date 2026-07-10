@@ -1,7 +1,7 @@
 site_name: TAG Help Centre
 site_description: User guides for the TAG Recruiter Dashboard and TAG Connect worker app
-site_url: https://tag-construction-ltd.github.io/tag-help/
-repo_url: https://github.com/TAG-Construction-Ltd/tag-help
+site_url: https://tag-construction-ltd.github.io/product-manual/
+repo_url: https://github.com/TAG-Construction-Ltd/product-manual
 
 theme:
   name: material
