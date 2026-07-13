@@ -307,3 +307,40 @@ svg a:hover rect { stroke-width: 2; filter: drop-shadow(0 0 6px var(--tag-glow))
   .tag-card-title, .tag-card-desc, .tag-card-kicker, .tag-card-cta { color: #000 !important; }
   * { animation: none !important; }
 }
+
+/* ============================================================
+   MERMAID diagrams — zoom / pan / fullscreen controls
+   ============================================================ */
+.mz { position: relative; overflow: hidden; touch-action: none;
+  border: 1px solid var(--tag-line); border-radius: var(--tag-radius);
+  background: var(--tag-card); }
+.mz svg { transform-origin: 0 0; will-change: transform; cursor: grab; max-width: none; }
+.mz.mz-grab, .mz.mz-grab svg { cursor: grabbing; }
+@media (prefers-reduced-motion: no-preference) { .mz svg { transition: transform .07s ease-out; } }
+
+.mz-bar { position: absolute; top: .5rem; right: .5rem; display: flex; gap: .3rem; z-index: 4;
+  opacity: .45; transition: opacity .15s ease; }
+.mz:hover .mz-bar, .mz.mz-full .mz-bar, .mz:focus-within .mz-bar { opacity: 1; }
+.mz-btn { width: 1.9rem; height: 1.9rem; display: flex; align-items: center; justify-content: center;
+  border-radius: 9px; border: 1px solid var(--tag-line-str); color: var(--tag-ink);
+  background: color-mix(in srgb, var(--tag-surface) 86%, transparent); backdrop-filter: blur(6px);
+  font-size: .95rem; font-weight: 700; line-height: 1; cursor: pointer;
+  transition: transform .12s ease, border-color .12s ease, box-shadow .12s ease; }
+.mz-btn:hover { transform: translateY(-1px); border-color: var(--tag-accent);
+  box-shadow: 0 6px 16px -10px var(--tag-glow); }
+.mz-hint { position: absolute; left: .6rem; bottom: .5rem; z-index: 4; pointer-events: none;
+  font-size: .62rem; color: var(--tag-ink-2); background: color-mix(in srgb, var(--tag-surface) 82%, transparent);
+  border: 1px solid var(--tag-line); border-radius: 999px; padding: .18rem .6rem;
+  opacity: 0; transition: opacity .15s ease; backdrop-filter: blur(6px); }
+.mz:hover .mz-hint { opacity: .9; }
+.mz-full { position: fixed !important; inset: 3vh 3vw; z-index: 2000; margin: 0 !important;
+  background: var(--tag-card); border: 1px solid var(--tag-line-str);
+  box-shadow: 0 40px 100px -30px rgba(0,0,0,.6); border-radius: var(--tag-radius); }
+body.mz-lock { overflow: hidden; }
+
+@media print {
+  .mz-bar, .mz-hint { display: none !important; }
+  .mz { overflow: visible !important; border: none !important; }
+  .mz svg { transform: none !important; }
+  .mz-full { position: static !important; inset: auto !important; box-shadow: none !important; }
+}

@@ -83,3 +83,112 @@ document$.subscribe(function () {
   ex.querySelectorAll("input[type=checkbox]").forEach(function (c) { c.addEventListener("change", update); });
   update();
 });
+
+/* ---- Mermaid diagrams: zoom / pan / fullscreen (dependency-free) ---- */
+document$.subscribe(function () {
+  document.querySelectorAll(".mermaid").forEach(function (m) {
+    if (m.dataset.mz) return;
+    var start = function () {
+      var svg = m.querySelector("svg");
+      if (!svg) return false;
+      initMermaidZoom(m, svg);
+      return true;
+    };
+    if (!start()) {
+      // Material renders mermaid asynchronously — wait for the <svg> to appear
+      var obs = new MutationObserver(function () { if (start()) obs.disconnect(); });
+      obs.observe(m, { childList: true, subtree: true });
+    }
+  });
+});
+
+function initMermaidZoom(m, svg) {
+  m.dataset.mz = "1";
+  m.classList.add("mz");
+  var s = 1, tx = 0, ty = 0;
+  svg.style.transformOrigin = "0 0";
+  svg.style.maxWidth = "none";
+  function apply() { svg.style.transform = "translate(" + tx + "px," + ty + "px) scale(" + s + ")"; }
+  function zoomAt(cx, cy, f) {
+    var ns = Math.min(8, Math.max(0.4, s * f));
+    tx = cx - (cx - tx) * (ns / s);
+    ty = cy - (cy - ty) * (ns / s);
+    s = ns; apply();
+  }
+  function reset() { s = 1; tx = 0; ty = 0; apply(); }
+
+  var bar = document.createElement("div");
+  bar.className = "mz-bar";
+  function btn(txt, label, fn) {
+    var b = document.createElement("button");
+    b.type = "button"; b.className = "mz-btn"; b.textContent = txt; b.setAttribute("aria-label", label); b.title = label;
+    b.addEventListener("click", function (e) { e.preventDefault(); e.stopPropagation(); fn(); });
+    return b;
+  }
+  bar.appendChild(btn("+", "Zoom in", function () { zoomAt(m.clientWidth / 2, m.clientHeight / 2, 1.25); }));
+  bar.appendChild(btn("−", "Zoom out", function () { zoomAt(m.clientWidth / 2, m.clientHeight / 2, 0.8); }));
+  bar.appendChild(btn("↻", "Reset", reset));
+  bar.appendChild(btn("⛶", "Fullscreen", function () {
+    var full = m.classList.toggle("mz-full");
+    document.body.classList.toggle("mz-lock", full);
+    reset();
+  }));
+  m.appendChild(bar);
+
+  var hint = document.createElement("div");
+  hint.className = "mz-hint";
+  hint.textContent = "Ctrl + scroll to zoom · drag to pan";
+  m.appendChild(hint);
+
+  // Ctrl/⌘ + wheel zoom (plain scroll still scrolls the page — no scroll trap)
+  m.addEventListener("wheel", function (e) {
+    if (!(e.ctrlKey || e.metaKey)) return;
+    e.preventDefault();
+    var r = m.getBoundingClientRect();
+    zoomAt(e.clientX - r.left, e.clientY - r.top, e.deltaY < 0 ? 1.15 : 0.87);
+  }, { passive: false });
+
+  // drag to pan
+  var drag = false, lx = 0, ly = 0;
+  m.addEventListener("mousedown", function (e) {
+    if (e.target.closest(".mz-bar")) return;
+    drag = true; lx = e.clientX; ly = e.clientY; m.classList.add("mz-grab"); e.preventDefault();
+  });
+  window.addEventListener("mousemove", function (e) {
+    if (!drag) return; tx += e.clientX - lx; ty += e.clientY - ly; lx = e.clientX; ly = e.clientY; apply();
+  });
+  window.addEventListener("mouseup", function () { drag = false; m.classList.remove("mz-grab"); });
+
+  // touch: one-finger pan, two-finger pinch
+  var pts = {}, pinchDist = 0;
+  m.addEventListener("touchstart", function (e) {
+    for (var i = 0; i < e.changedTouches.length; i++) { var t = e.changedTouches[i]; pts[t.identifier] = { x: t.clientX, y: t.clientY }; }
+  }, { passive: true });
+  m.addEventListener("touchmove", function (e) {
+    var ids = Object.keys(pts);
+    if (ids.length === 1) {
+      var t = e.touches[0], p = pts[t.identifier]; if (!p) return;
+      tx += t.clientX - p.x; ty += t.clientY - p.y; p.x = t.clientX; p.y = t.clientY; apply(); e.preventDefault();
+    } else if (ids.length >= 2 && e.touches.length >= 2) {
+      var a = e.touches[0], b = e.touches[1];
+      var d = Math.hypot(a.clientX - b.clientX, a.clientY - b.clientY);
+      var r = m.getBoundingClientRect();
+      if (pinchDist) zoomAt((a.clientX + b.clientX) / 2 - r.left, (a.clientY + b.clientY) / 2 - r.top, d / pinchDist);
+      pinchDist = d; e.preventDefault();
+    }
+  }, { passive: false });
+  m.addEventListener("touchend", function (e) {
+    for (var i = 0; i < e.changedTouches.length; i++) delete pts[e.changedTouches[i].identifier];
+    if (Object.keys(pts).length < 2) pinchDist = 0;
+  }, { passive: true });
+
+  apply();
+}
+
+/* Esc exits any fullscreen diagram (bound once) */
+window.addEventListener("keydown", function (e) {
+  if (e.key === "Escape") {
+    var f = document.querySelector(".mermaid.mz-full");
+    if (f) { f.classList.remove("mz-full"); document.body.classList.remove("mz-lock"); }
+  }
+});
