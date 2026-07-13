@@ -94,7 +94,16 @@ function mzDecode(s) { var t = document.createElement("textarea"); t.innerHTML =
 function mzAttach(d) {
   if (d.dataset.mz) return;
   var svg = d.querySelector("svg");
-  if (svg) initMermaidZoom(d, svg);
+  if (!svg) return;
+  d.dataset.mz = "1";
+  // The bare .mermaid container won't lay out non-SVG children reliably, so
+  // wrap the diagram and hang the zoom UI off the wrapper (which lays out fine).
+  var wrap = document.createElement("div");
+  wrap.className = "mz";
+  d.parentNode.insertBefore(wrap, d);
+  wrap.appendChild(d);
+  d.style.overflow = "visible";
+  initMermaidZoom(wrap, svg);
 }
 function mzGetSources(divs) {
   // Cache per path so repeated passes don't re-fetch.
