@@ -319,7 +319,7 @@ svg a:hover rect { stroke-width: 2; filter: drop-shadow(0 0 6px var(--tag-glow))
 @media (prefers-reduced-motion: no-preference) { .mz svg { transition: transform .07s ease-out; } }
 
 .mz-bar { position: absolute; top: .5rem; right: .5rem; display: flex; gap: .3rem; z-index: 4;
-  opacity: .45; transition: opacity .15s ease; }
+  opacity: .7; transition: opacity .15s ease; }
 .mz:hover .mz-bar, .mz.mz-full .mz-bar, .mz:focus-within .mz-bar { opacity: 1; }
 .mz-btn { width: 1.9rem; height: 1.9rem; display: flex; align-items: center; justify-content: center;
   border-radius: 9px; border: 1px solid var(--tag-line-str); color: var(--tag-ink);

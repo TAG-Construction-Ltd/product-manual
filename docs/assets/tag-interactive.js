@@ -84,22 +84,43 @@ document$.subscribe(function () {
   update();
 });
 
-/* ---- Mermaid diagrams: zoom / pan / fullscreen (dependency-free) ---- */
+/* ---- Mermaid diagrams: self-heal render (Material can leave them empty) + zoom/pan ---- */
+function mzDecode(s) { var t = document.createElement("textarea"); t.innerHTML = s; return t.value; }
+function mzAttach(d) {
+  if (d.dataset.mz) return;
+  var svg = d.querySelector("svg");
+  if (svg) initMermaidZoom(d, svg);
+}
+function mzRenderThenAttach(d) {
+  d.removeAttribute("data-processed");
+  if (window.mermaid && window.mermaid.run && d.textContent.trim()) {
+    window.mermaid.run({ nodes: [d] }).then(function () { mzAttach(d); }, function () { mzAttach(d); });
+  } else {
+    var obs = new MutationObserver(function () { if (d.querySelector("svg")) { obs.disconnect(); mzAttach(d); } });
+    obs.observe(d, { childList: true, subtree: true });
+  }
+}
 document$.subscribe(function () {
-  document.querySelectorAll(".mermaid").forEach(function (m) {
-    if (m.dataset.mz) return;
-    var start = function () {
-      var svg = m.querySelector("svg");
-      if (!svg) return false;
-      initMermaidZoom(m, svg);
-      return true;
-    };
-    if (!start()) {
-      // Material renders mermaid asynchronously — wait for the <svg> to appear
-      var obs = new MutationObserver(function () { if (start()) obs.disconnect(); });
-      obs.observe(m, { childList: true, subtree: true });
-    }
-  });
+  var divs = [].slice.call(document.querySelectorAll(".mermaid"));
+  if (!divs.length) return;
+  // Give Material a moment to render; then attach zoom to any it drew, and
+  // recover + render any it left empty (source stripped, no <svg>).
+  setTimeout(function () {
+    divs.forEach(function (d) { if (d.querySelector("svg")) mzAttach(d); });
+    var empties = divs.filter(function (d) { return !d.dataset.mz && !d.querySelector("svg"); });
+    if (!empties.length) return;
+    if (empties.every(function (d) { return d.textContent.trim(); })) { empties.forEach(mzRenderThenAttach); return; }
+    // Some divs lost their source — pull it back from the page HTML (order matches DOM 1:1 per page)
+    fetch(location.href).then(function (r) { return r.text(); }).then(function (html) {
+      var srcs = [], re = /<pre class="mermaid"><code>([\s\S]*?)<\/code><\/pre>/g, m;
+      while ((m = re.exec(html))) srcs.push(mzDecode(m[1]));
+      divs.forEach(function (d, i) {
+        if (d.dataset.mz || d.querySelector("svg")) return;
+        if (!d.textContent.trim() && srcs[i] != null) d.textContent = srcs[i];
+        mzRenderThenAttach(d);
+      });
+    }).catch(function () { empties.forEach(mzRenderThenAttach); });
+  }, 450);
 });
 
 function initMermaidZoom(m, svg) {
