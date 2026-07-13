@@ -84,43 +84,54 @@ document$.subscribe(function () {
   update();
 });
 
-/* ---- Mermaid diagrams: self-heal render (Material can leave them empty) + zoom/pan ---- */
+/* ---- Mermaid diagrams: self-heal render + zoom/pan ----
+   Material's built-in mermaid pass strips the source and leaves the diagram
+   div empty on this site. We re-render each diagram ourselves from the page's
+   own source, mark it data-processed so Material won't touch it again, and then
+   attach the zoom controls. Runs on a couple of delayed passes so it lands
+   after Material has finished its (failing) pass. */
 function mzDecode(s) { var t = document.createElement("textarea"); t.innerHTML = s; return t.value; }
 function mzAttach(d) {
   if (d.dataset.mz) return;
   var svg = d.querySelector("svg");
   if (svg) initMermaidZoom(d, svg);
 }
-function mzRenderThenAttach(d) {
-  d.removeAttribute("data-processed");
-  if (window.mermaid && window.mermaid.run && d.textContent.trim()) {
-    window.mermaid.run({ nodes: [d] }).then(function () { mzAttach(d); }, function () { mzAttach(d); });
-  } else {
-    var obs = new MutationObserver(function () { if (d.querySelector("svg")) { obs.disconnect(); mzAttach(d); } });
-    obs.observe(d, { childList: true, subtree: true });
-  }
+function mzGetSources(divs) {
+  // Cache per path so repeated passes don't re-fetch.
+  if (window.__mzSrc && window.__mzSrcPath === location.pathname) return Promise.resolve(window.__mzSrc);
+  return fetch(location.href).then(function (r) { return r.text(); }).then(function (html) {
+    var srcs = [], re = /<pre class="mermaid"><code>([\s\S]*?)<\/code><\/pre>/g, m;
+    while ((m = re.exec(html))) srcs.push(mzDecode(m[1]));
+    // Fall back to any diagram that still holds its own text.
+    divs.forEach(function (d, i) { if ((srcs[i] == null || !srcs[i].trim()) && d.textContent.trim()) srcs[i] = d.textContent.trim(); });
+    window.__mzSrc = srcs; window.__mzSrcPath = location.pathname;
+    return srcs;
+  });
+}
+function mzHeal(divs) {
+  mzGetSources(divs).then(function (srcs) {
+    divs.forEach(function (d, i) {
+      if (d.dataset.mz) return;                 // already zoom-enabled
+      if (d.querySelector("svg")) { mzAttach(d); return; }   // Material did render it
+      var src = srcs[i];
+      if (!src || !window.mermaid || !window.mermaid.render) return;
+      window.mermaid.render("mz-" + Math.random().toString(36).slice(2), src).then(function (o) {
+        if (d.dataset.mz || d.querySelector("svg")) { mzAttach(d); return; }
+        d.innerHTML = o.svg;
+        if (o.bindFunctions) o.bindFunctions(d);
+        d.setAttribute("data-processed", "true");   // stop Material re-processing/clearing it
+        mzAttach(d);
+      }).catch(function () {});
+    });
+  }).catch(function () {});
 }
 document$.subscribe(function () {
   var divs = [].slice.call(document.querySelectorAll(".mermaid"));
   if (!divs.length) return;
-  // Give Material a moment to render; then attach zoom to any it drew, and
-  // recover + render any it left empty (source stripped, no <svg>).
-  setTimeout(function () {
-    divs.forEach(function (d) { if (d.querySelector("svg")) mzAttach(d); });
-    var empties = divs.filter(function (d) { return !d.dataset.mz && !d.querySelector("svg"); });
-    if (!empties.length) return;
-    if (empties.every(function (d) { return d.textContent.trim(); })) { empties.forEach(mzRenderThenAttach); return; }
-    // Some divs lost their source — pull it back from the page HTML (order matches DOM 1:1 per page)
-    fetch(location.href).then(function (r) { return r.text(); }).then(function (html) {
-      var srcs = [], re = /<pre class="mermaid"><code>([\s\S]*?)<\/code><\/pre>/g, m;
-      while ((m = re.exec(html))) srcs.push(mzDecode(m[1]));
-      divs.forEach(function (d, i) {
-        if (d.dataset.mz || d.querySelector("svg")) return;
-        if (!d.textContent.trim() && srcs[i] != null) d.textContent = srcs[i];
-        mzRenderThenAttach(d);
-      });
-    }).catch(function () { empties.forEach(mzRenderThenAttach); });
-  }, 450);
+  // Passes land after Material's early pass (~800ms) so our render sticks.
+  setTimeout(function () { mzHeal(divs); }, 300);
+  setTimeout(function () { mzHeal(divs); }, 1200);
+  setTimeout(function () { mzHeal(divs); }, 2600);
 });
 
 function initMermaidZoom(m, svg) {
