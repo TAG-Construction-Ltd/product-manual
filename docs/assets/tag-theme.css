@@ -311,9 +311,10 @@ svg a:hover rect { stroke-width: 2; filter: drop-shadow(0 0 6px var(--tag-glow))
 /* ============================================================
    MERMAID diagrams — zoom / pan / fullscreen controls
    ============================================================ */
-.mz { position: relative; overflow: hidden; touch-action: none;
+.mz { position: relative; overflow: hidden; touch-action: none; max-height: 78vh;
   border: 1px solid var(--tag-line); border-radius: var(--tag-radius);
   background: var(--tag-card); }
+.mz.mz-full { max-height: none; }
 .mz svg { transform-origin: 0 0; will-change: transform; cursor: grab; max-width: none; }
 .mz.mz-grab, .mz.mz-grab svg { cursor: grabbing; }
 @media (prefers-reduced-motion: no-preference) { .mz svg { transition: transform .07s ease-out; } }

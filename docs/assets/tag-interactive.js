@@ -187,12 +187,11 @@ function initMermaidZoom(m, svg) {
 
   var hint = document.createElement("div");
   hint.className = "mz-hint";
-  hint.textContent = "Ctrl + scroll to zoom · drag to pan";
+  hint.textContent = "Scroll to zoom · drag to pan · ⛶ full screen";
   m.appendChild(hint);
 
-  // Ctrl/⌘ + wheel zoom (plain scroll still scrolls the page — no scroll trap)
+  // Scroll to zoom (diagram is height-bounded, so the page still scrolls around it).
   m.addEventListener("wheel", function (e) {
-    if (!(e.ctrlKey || e.metaKey)) return;
     e.preventDefault();
     var r = m.getBoundingClientRect();
     zoomAt(e.clientX - r.left, e.clientY - r.top, e.deltaY < 0 ? 1.15 : 0.87);
