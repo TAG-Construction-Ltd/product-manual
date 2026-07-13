@@ -125,13 +125,22 @@ function mzHeal(divs) {
     });
   }).catch(function () {});
 }
-document$.subscribe(function () {
+function mzRun() {
   var divs = [].slice.call(document.querySelectorAll(".mermaid"));
-  if (!divs.length) return;
-  // Passes land after Material's early pass (~800ms) so our render sticks.
-  setTimeout(function () { mzHeal(divs); }, 300);
-  setTimeout(function () { mzHeal(divs); }, 1200);
-  setTimeout(function () { mzHeal(divs); }, 2600);
+  if (divs.length) mzHeal(divs);   // re-query fresh each pass (DOM/diagrams may arrive late)
+}
+document$.subscribe(function () {
+  // Re-query on each pass so we catch diagrams that render after Material's
+  // early (failing) pass (~800ms) and after any instant-navigation swap.
+  [200, 900, 1800, 3200, 5000].forEach(function (t) { setTimeout(mzRun, t); });
+  // Also render as soon as a diagram appears / gets emptied by Material.
+  var main = document.querySelector(".md-content, .md-main, body");
+  if (main && !main.dataset.mzObs) {
+    main.dataset.mzObs = "1";
+    var t = null;
+    new MutationObserver(function () { clearTimeout(t); t = setTimeout(mzRun, 150); })
+      .observe(main, { childList: true, subtree: true });
+  }
 });
 
 function initMermaidZoom(m, svg) {
