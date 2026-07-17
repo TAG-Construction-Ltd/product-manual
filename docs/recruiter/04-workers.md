@@ -2,6 +2,11 @@
 
 The **Workers** page is your working roster — every worker, their status, and the action each one needs, in one table built for scanning hundreds of rows.
 
+<figure markdown>
+<img src="../../assets/screenshots/ch04-workers-list.png" alt="The TAG Workers table in rich view: each row shows the worker, their cards and qualifications, compliance and expiry, experience, status, and a contextual action button">
+<figcaption>The Workers table (rich view) — cards, compliance, experience, status and a contextual action on every row, with red/amber row tinting for triage. (Worker names and photos are blurred for privacy.)</figcaption>
+</figure>
+
 ## 4.1 Two views of the same table
 
 Switch between two densities with the view toggle (top right). Same workers, same order — different depth:

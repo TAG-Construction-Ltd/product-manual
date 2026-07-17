@@ -2,6 +2,11 @@
 
 Home answers one question: **what needs me today?** It's built to be read in thirty seconds each morning — numbers, then the attention block, then a glance at the live feed.
 
+<figure markdown>
+<img src="../../assets/screenshots/ch03-dashboard-home.png" alt="The recruiter dashboard home: KPI tiles, the attention banner, workforce state, trade coverage, and the live activity feed">
+<figcaption>Dashboard home — the KPI tiles, attention banner, workforce state, trade coverage and the live activity feed, all on one scannable page. (Worker names are blurred for privacy.)</figcaption>
+</figure>
+
 ## 3.1 The KPI tiles
 
 The tiles across the top are live counts — total workers, pending verifications, compliance issues, active projects and the rest. Two things make them more than decoration:

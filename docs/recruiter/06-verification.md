@@ -39,11 +39,11 @@ Opening a card from the queue shows the review screen. Read it in this order:
 **④ The extracted fields (right).** The system reads every field off the card and shows its confidence visually: fields it is sure about appear small and dimmed; **fields it is unsure about appear enlarged with a coloured background** and a label such as CONFLICT or EXPIRED. Give your attention where the screen puts it — the big fields are the ones that need your eyes.
 
 <div class="shot" markdown>
-<div class="shot-canvas">ch06-single-review.png — capture pending; tap the numbers</div>
-<button class="hs" style="left:45%;top:6%" data-note="Worker context bar: who uploaded this, their tier, other cards, project, and activity — your plausibility check.">1</button>
-<button class="hs" style="left:45%;top:18%" data-note="Red-flag chips. No bar at all means the system found nothing wrong — clean cards deserve a faster pass.">2</button>
-<button class="hs" style="left:20%;top:55%" data-note="The card image with the uncertain region highlighted — compare it against the extracted value beside it.">3</button>
-<button class="hs" style="left:75%;top:55%" data-note="Extracted fields sized by confidence: dimmed = trust it, enlarged with colour = look at it.">4</button>
+<img src="../../assets/screenshots/ch06-single-review.png" alt="The single-card review screen: worker context bar at the top, a failed rule-check bar, the card front and back images on the left, and the AI-extracted fields on the right with the expired field enlarged">
+<button class="hs" style="left:22%;top:12%" data-note="Worker context bar: who uploaded this, their tier, other cards, project, and activity — your plausibility check.">1</button>
+<button class="hs" style="left:22%;top:20%" data-note="Red-flag chips (here: rule checks failed, card expired). No bar at all means the system found nothing wrong — clean cards deserve a faster pass.">2</button>
+<button class="hs" style="left:33%;top:46%" data-note="The card image (front and back) — zoom, rotate, fullscreen. Compare it against the extracted value beside it.">3</button>
+<button class="hs" style="left:70%;top:42%" data-note="Extracted fields sized by confidence: dimmed = trust it, enlarged with colour (here the expired Expiry field) = look at it.">4</button>
 <div class="hs-note"></div>
 </div>
 
